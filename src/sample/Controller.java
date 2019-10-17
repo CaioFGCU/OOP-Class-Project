@@ -27,7 +27,7 @@ public class Controller {
     private TextField manufacText;
 
     @FXML
-    private ChoiceBox<?> itemtype_choice;
+    private ChoiceBox<ItemType> itemtype_choice;
 
     @FXML
     private Button addButton;
@@ -49,29 +49,29 @@ public class Controller {
     @FXML
     void initialize() {
         statement = database();
-        cboQuantity.getItems().addAll("1","2","3","4","5","6",
-                "7","8","9" ,"10" );
+        cboQuantity.getItems().addAll("1", "2", "3", "4", "5", "6",
+                "7", "8", "9", "10");
         cboQuantity.setEditable(true);
         cboQuantity.getSelectionModel().selectFirst();
-
+        itemtype_choice.getItems().addAll();
 
     }
 
     /**
      * this method gets the input from the user in the GUI text field in the PRODUCT tab
      * and transfers to the database
+     *
      * @param event event parameter used for action of mouse click on ADD PRODUCT button
      */
     @FXML
     void handleAddProduct(MouseEvent event) {
         String productName = productNameText.getText();
         String manufacturer = manufacText.getText();
-        String SQL = "INSERT INTO Product(type, manufacturer, name) VALUES ( 'AUDIO'," + "'" +  manufacturer + "'" + "," + "'" + productName + "'" + ")";
+        String SQL = "INSERT INTO Product(type, manufacturer, name) VALUES ( 'AUDIO'," + "'" + manufacturer + "'" + "," + "'" + productName + "'" + ")";
         //System.out.println(SQL);
         try {
             statement.executeUpdate(SQL);
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -84,9 +84,10 @@ public class Controller {
 
     /**
      * method used to connect database to H2 and intelliJ to use for program
+     *
      * @return stmt returned to be used to initialize database in another method.
      */
-    public Statement database (){
+    public Statement database() {
         final String JDBC_DRIVER = "org.h2.Driver";
         final String DB_URL = "jdbc:h2:./res/HR";
 
