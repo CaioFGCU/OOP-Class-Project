@@ -1,15 +1,11 @@
 package sample;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.sql.*;
+import java.util.Date;
 
 /**
  * This class represents the javaFX code for the GUI with all text fields, tables,
@@ -41,6 +37,9 @@ public class Controller {
     @FXML
     private Button buttonRecProduction;
 
+    @FXML
+    private TextArea ProdLogTxtArea;
+
     Statement statement;
 
     /**
@@ -55,6 +54,34 @@ public class Controller {
         cboQuantity.getSelectionModel().selectFirst();
         itemtype_choice.getItems().addAll();
 
+        /**
+         * Issue4
+         */
+// test constructor used when creating production records from user interface
+        Integer numProduced = 3; // this will come from the combobox in the UI
+
+        for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
+            ProductionRecord pr = new ProductionRecord(0);
+            System.out.println(pr.toString());
+        }
+
+// test constructor used when creating production records from reading database
+        ProductionRecord pr = new ProductionRecord(0, 3, "1", new java.util.Date());
+        ProdLogTxtArea.setText(pr.toString());
+
+// testing accessors and mutators
+        pr.setProductionNum(1);
+        System.out.println(pr.getProductionNum());
+
+        pr.setProductID(4);
+        System.out.println(pr.getProductID());
+
+        pr.setSerialNum("2");
+        System.out.println(pr.getSerialNum());
+
+        pr.setProdDate(new Date());
+        System.out.println(pr.getProdDate());
+
     }
 
     /**
@@ -67,7 +94,9 @@ public class Controller {
     void handleAddProduct(MouseEvent event) {
         String productName = productNameText.getText();
         String manufacturer = manufacText.getText();
-        String SQL = "INSERT INTO Product(type, manufacturer, name) VALUES ( 'AUDIO'," + "'" + manufacturer + "'" + "," + "'" + productName + "'" + ")";
+        String SQL = "INSERT INTO Product(type, manufacturer, name) " +
+                "VALUES ( 'AUDIO'," + "'" + manufacturer + "'"
+                + "," + "'" + productName + "'" + ")";
         //System.out.println(SQL);
         try {
             statement.executeUpdate(SQL);
