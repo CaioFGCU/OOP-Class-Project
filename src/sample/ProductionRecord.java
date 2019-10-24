@@ -25,6 +25,10 @@ public class ProductionRecord {
         this.dateProduced = dateProduced;
     }
 
+    ProductionRecord(Product product, int itemCount){
+        serialNumber = product.manufacturer.substring(0,3) + product.type.getCode() + String.format("%05D",itemCount);
+    }
+
     @Override
     public String toString(){
         return "Production Number: " + productionNumber + " Product ID: " + productID
