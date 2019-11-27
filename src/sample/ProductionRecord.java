@@ -35,6 +35,7 @@ public class ProductionRecord {
                  + " Serial Number: " + serialNumber + " Date: " + dateProduced;
     }
 
+
     public int getProductionNum() {
         return productionNumber;
     }

@@ -3,7 +3,7 @@ package sample;
 /**
  * Product class is an abstract class and implements Item interface to get contents within Item.
  */
-abstract class Product implements Item {
+public abstract class Product implements Item {
     int id;
     ItemType type;
     String manufacturer;
@@ -21,6 +21,14 @@ abstract class Product implements Item {
         this.manufacturer = manufacturer;
         this.type = type;
     }
+
+    Product(int id, String name, String manufacturer, ItemType type) {
+        this.id = id;
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.type = type;
+    }
+
 
 
     public int getId() {
