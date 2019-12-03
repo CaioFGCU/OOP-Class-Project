@@ -7,13 +7,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * This class represents the javaFX code for the GUI with all text fields, tables,
  * boxes, buttons, and tabs.
+ * used to control GUI functions, actions, displays, and calls from Database tables and
+ * the Database Manager class.
  */
 public class Controller {
 
@@ -59,22 +63,42 @@ public class Controller {
     @FXML
     private TextArea ProdLogTxtArea;
 
+    @FXML
+    private Tab emptab;
+
+    @FXML
+    private TextField employee_un;
+
+    @FXML
+    private PasswordField employee_pw;
+
+    @FXML
+    private TextField employee_Login_display;
+
+    @FXML
+    private Button login_button;
+
     private ObservableList<Product> productLine;
+
+    private ObservableList<ProductionRecord> productionLog;
 
     Statement statement;
 
     /**
      * method used to initialize database and comboBox
+     * initializes tableview and seperate columns within it
      */
     @FXML
     void initialize() {
-        try{
+        try {
             DatabaseManager dm = new DatabaseManager();
             productLine = FXCollections.observableArrayList((dm.GetProductsfromDB()));
-            List<Product> listOfItem = dm.GetProductsfromDB();
-            productLine.addAll(listOfItem);
+            loadProductList();
+            productionLog = FXCollections.observableArrayList((dm.getProductionRecords()));
+            showProduction();
             Product_List.setItems(productLine);
             Product_Table.setItems(productLine);
+
 
             column_ID.setCellValueFactory(new PropertyValueFactory<>("id"));
             column_Manuf.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
@@ -82,11 +106,10 @@ public class Controller {
             column_Type.setCellValueFactory(new PropertyValueFactory<>("type"));
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        statement = database();
+
         cboQuantity.getItems().addAll("1", "2", "3", "4", "5", "6",
                 "7", "8", "9", "10");
         cboQuantity.setEditable(true);
@@ -123,10 +146,28 @@ public class Controller {
 */
     }
 
+    /**
+     * used to get instance of product into database and will be used later on to dynamically add
+     * products to Tableview and PRODUCT table while program is running.
+     */
+    public void loadProductList() {
+
+        DatabaseManager dm = new DatabaseManager();
+        List<Product> listOfItem = null;
+        try {
+            listOfItem = dm.GetProductsfromDB();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        productLine.addAll(listOfItem);
+
+    }
+
 
     /**
      * this method gets the input from the user in the GUI text field in the PRODUCT tab
      * and transfers to the database
+     * displays product list with name, manufacturer, and type
      *
      * @param event event parameter used for action of mouse click on ADD PRODUCT button
      */
@@ -153,50 +194,106 @@ public class Controller {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        loadProductList();
+
     }
 
 
-
-
+    /**
+     * record button event handler that records product chosen from product list view
+     * also gets value from combobox and adds the quantity of the product
+     * calls showproduction to display all of the above
+     *
+     * @param event
+     */
     @FXML
     void handle_RecProd(MouseEvent event) {
+        Product getproduct = Product_List.getSelectionModel().getSelectedItem();
+        String getcmbo_quantity = cboQuantity.getValue();
+        Integer int_quntity;
+        try {
+            int_quntity = Integer.parseInt(getcmbo_quantity);
+        } catch (NumberFormatException ex) {
+            int_quntity = 0;
+        }
+        ArrayList<ProductionRecord> productionRun = new ArrayList<>();
+        int itemcount = 0;
+        for (ProductionRecord r : productionLog) {
+            if (r.getProductID() == getproduct.getId()) {
+                itemcount++;
+            }
+        }
+        for (int i = 0; i < int_quntity; i++) {
+            ProductionRecord r = new ProductionRecord(getproduct, itemcount);
+            productionRun.add(r);
+        }
+        DatabaseManager db = new DatabaseManager();
+        db.addToProductionDB(productionRun);
+        showProduction();
 
     }
 
     /**
-     * method used to connect database to H2 and intelliJ to use for program
-     *
-     * @return stmt returned to be used to initialize database in another method.
+     * used in production log tab to display id, serial num, and date produced thru database.
      */
-    public Statement database() {
-        final String JDBC_DRIVER = "org.h2.Driver";
-        final String DB_URL = "jdbc:h2:./res/HR";
-
-        //  Database credentials
-        final String USER = "";
-        final String PASS = "";
-        Connection conn = null;
-        Statement stmt = null;
-
-        try {
-            // STEP 1: Register JDBC driver
-            Class.forName(JDBC_DRIVER);
-
-            //STEP 2: Open a connection
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            //STEP 3: Execute a query
-            stmt = conn.createStatement();
-
-            return stmt;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+    public void showProduction() {
+        DatabaseManager dm = new DatabaseManager();
+        List<ProductionRecord> call = dm.getProductionRecords();
+        ProdLogTxtArea.setText("");
+        for (ProductionRecord r : call) {
+            ProdLogTxtArea.appendText(r.toString() + "\n");
         }
+        productionLog.clear();
+        productionLog.addAll(dm.getProductionRecords());
     }
+
+    /**
+     * handles login button for employees
+     *
+     * @param event
+     */
+    @FXML
+    void handle_login(MouseEvent event) {
+
+    }
+
+
+    //database was initialized using Database manager class. this used as reference.
+
+//    /**
+//     * method used to connect database to H2 and intelliJ to use for program
+//     *
+//     * @return stmt returned to be used to initialize database in another method.
+//     */
+//    public Statement database() {
+//        final String JDBC_DRIVER = "org.h2.Driver";
+//        final String DB_URL = "jdbc:h2:./res/HR";
+//
+//        //  Database credentials
+//        final String USER = "";
+//        final String PASS = "";
+//        Connection conn = null;
+//        Statement stmt = null;
+//
+//        try {
+//            // STEP 1: Register JDBC driver
+//            Class.forName(JDBC_DRIVER);
+//
+//            //STEP 2: Open a connection
+//            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//
+//            //STEP 3: Execute a query
+//            stmt = conn.createStatement();
+//
+//            return stmt;
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//            return null;
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 }

@@ -2,6 +2,9 @@ package sample;
 
 import java.util.Date;
 
+/**
+ *
+ */
 public class ProductionRecord {
 
     private int productionNumber;
@@ -26,9 +29,14 @@ public class ProductionRecord {
     }
 
     ProductionRecord(Product product, int itemCount){
-        serialNumber = product.manufacturer.substring(0,3) + product.type.getCode() + String.format("%05D",itemCount);
+        serialNumber = product.manufacturer.substring(0,3) + product.type.getCode() + String.format("%05d",itemCount);
+        this.productID = product.getId();
     }
 
+    /**
+     *
+     * @return returns string of variables listed to be used to print out
+     */
     @Override
     public String toString(){
         return "Production Number: " + productionNumber + " Product ID: " + productID
