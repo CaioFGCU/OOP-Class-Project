@@ -1,12 +1,15 @@
 ## Introduction
 
 This is a production line software. Where an employee can login to their account and add new item to the to the system.
-The next step is the employee can record production and it is adding to the the system with an unique Serial number.
+Employees can also chose products from the system and select those products and the quantity needed of that product.
+The employee shall be able to see a record of their actions in the production log after a new item is added or taken.
 
 ## Brief Description
 
-In this software
-
+Software takes item input by name, manufacturer, and type. Type is determined through a set list.
+then that item is added to the database and stored until needed to be taken out.
+Items can be selected and taken out in multiple quantities up to 10.
+A log of what has been added and taken is recorded as well as the functionaities of the system.
 
 ## Getting Started
 
