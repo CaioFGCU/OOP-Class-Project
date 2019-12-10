@@ -3,9 +3,11 @@ package sample;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import javax.xml.crypto.Data;
 import java.sql.*;
@@ -18,6 +20,7 @@ import java.util.List;
  * boxes, buttons, and tabs.
  * used to control GUI functions, actions, displays, and calls from Database tables and
  * the Database Manager class.
+ * made to manage changes and functionality to GUI and operations within it.
  */
 public class Controller {
 
@@ -85,7 +88,10 @@ public class Controller {
     Statement statement;
 
     /**
+     * loads the product list in product tab
+     * shows production record in productionRecord tab
      * method used to initialize database and comboBox
+     * adds values to comboBox and allows users to select quantity.
      * initializes tableview and seperate columns within it
      */
     @FXML
@@ -118,6 +124,7 @@ public class Controller {
 
         /**
          * Issue4
+         * creates production record and prints it out for testing.
          */
 // test constructor used when creating production records from user interface
         Integer numProduced = 3; // this will come from the combobox in the UI
@@ -168,34 +175,25 @@ public class Controller {
      * this method gets the input from the user in the GUI text field in the PRODUCT tab
      * and transfers to the database
      * displays product list with name, manufacturer, and type
+     * also used for pop up if name, manufacturer, and item type is left blank to display message.
      *
      * @param event event parameter used for action of mouse click on ADD PRODUCT button
      */
     @FXML
     void handleAddProduct(MouseEvent event) {
-        String productName = productNameText.getText();
-        String manufacturer = manufacText.getText();
-        String SQL = "INSERT INTO Product(type, manufacturer, name) " +
-                "VALUES (" + "'"
-                + itemtype_choice.getValue().getCode()
-                + "'"
-                + ","
-                + "'"
-                + manufacturer
-                + "'"
-                + ","
-                + "'"
-                + productName
-                + "'"
-                + ")";
-        //System.out.println(SQL);
         try {
-            statement.executeUpdate(SQL);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            String productName = productNameText.getText();
+            String manufacturer = manufacText.getText();
+            ItemType itemChoice = itemtype_choice.getValue();
+            if (productName.isEmpty()) throw new IllegalArgumentException("Product must have a name.");
+            if (manufacturer.isEmpty()) throw new IllegalArgumentException("Manufacturer must have a name.");
+            if (itemChoice == null) throw new IllegalArgumentException("Must choose an item.");
+            DatabaseManager dm = new DatabaseManager();
+            dm.addProductToDB(productName, manufacturer, itemChoice);
+            loadProductList();
+        } catch (IllegalArgumentException ex) {
+            ErrorMessage.popUpCreater(ex.getMessage());
         }
-        loadProductList();
-
     }
 
 
@@ -208,29 +206,34 @@ public class Controller {
      */
     @FXML
     void handle_RecProd(MouseEvent event) {
-        Product getproduct = Product_List.getSelectionModel().getSelectedItem();
-        String getcmbo_quantity = cboQuantity.getValue();
-        Integer int_quntity;
         try {
-            int_quntity = Integer.parseInt(getcmbo_quantity);
-        } catch (NumberFormatException ex) {
-            int_quntity = 0;
-        }
-        ArrayList<ProductionRecord> productionRun = new ArrayList<>();
-        int itemcount = 0;
-        for (ProductionRecord r : productionLog) {
-            if (r.getProductID() == getproduct.getId()) {
-                itemcount++;
+            Product getproduct = Product_List.getSelectionModel().getSelectedItem();
+            String getcmbo_quantity = cboQuantity.getValue();
+            Integer int_quntity;
+            try {
+                int_quntity = Integer.parseInt(getcmbo_quantity);
+            } catch (NumberFormatException ex) {
+                int_quntity = 0;
             }
+            if (getproduct == null) throw new IllegalArgumentException("Must choose product.");
+            if (int_quntity < 1) throw new IllegalArgumentException("Quantity must be a number greater than 1");
+            ArrayList<ProductionRecord> productionRun = new ArrayList<>();
+            int itemcount = 0;
+            for (ProductionRecord r : productionLog) {
+                if (r.getProductID() == getproduct.getId()) {
+                    itemcount++;
+                }
+            }
+            for (int i = 0; i < int_quntity; i++) {
+                ProductionRecord r = new ProductionRecord(getproduct, itemcount);
+                productionRun.add(r);
+            }
+            DatabaseManager db = new DatabaseManager();
+            db.addToProductionDB(productionRun);
+            showProduction();
+        } catch (IllegalArgumentException ex) {
+            ErrorMessage.popUpCreater(ex.getMessage());
         }
-        for (int i = 0; i < int_quntity; i++) {
-            ProductionRecord r = new ProductionRecord(getproduct, itemcount);
-            productionRun.add(r);
-        }
-        DatabaseManager db = new DatabaseManager();
-        db.addToProductionDB(productionRun);
-        showProduction();
-
     }
 
     /**
@@ -249,11 +252,14 @@ public class Controller {
 
     /**
      * handles login button for employees
+     * issue 8
      *
      * @param event
      */
     @FXML
     void handle_login(MouseEvent event) {
+
+        //not used as not a part of issue 9
 
     }
 

@@ -1,5 +1,9 @@
 package sample;
 
+/**
+ * item interface to get name, id, and manufacturer
+ * sets name and manufacturer
+ */
 public interface Item {
 
     int getID();

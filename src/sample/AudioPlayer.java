@@ -47,10 +47,15 @@ public class AudioPlayer extends Product implements MultimediaControl {
         return 0;
     }
 
+    /**
+     * prints out on bottom the formats and names used once the class is used.
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return ("Name: " + name + "\nManufacturer: " + manufacturer + "\nType: " + type
-        + "\nSupported Audio Formats: " + supportedAudioFormats + "\nSupported Playlist Formats: "
-         + supportedPlaylistFormats);
+                + "\nSupported Audio Formats: " + supportedAudioFormats + "\nSupported Playlist Formats: "
+                + supportedPlaylistFormats);
     }
 }

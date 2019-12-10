@@ -1,5 +1,10 @@
 package sample;
 
+/**
+ * inherits Product class to get parameters to be used in constructor
+ * Itemtype used for type
+ * implements MultimediaControl interface to play, stop, go to previous, or go to next
+ */
 public class MoviePlayer extends Product implements MultimediaControl{
 
     Screen screen;

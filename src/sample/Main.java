@@ -9,17 +9,25 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * main class used to start function, determine size of GUi and name
+ * declares new instances of classes being called
+ */
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("OOP Project");
         primaryStage.setScene(new Scene(root, 900, 700));
         primaryStage.show();
     }
 
-
+    /**
+     * instances of AudioPlayer and Multimedia created to show results.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",

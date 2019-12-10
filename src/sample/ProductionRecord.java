@@ -3,7 +3,9 @@ package sample;
 import java.util.Date;
 
 /**
- *
+ * class used for Production record tab
+ * used for recording id, serial number, and date of production
+ * used as type in input into production log.
  */
 public class ProductionRecord {
 
@@ -14,36 +16,35 @@ public class ProductionRecord {
     private String serialNumber;
     private Date dateProduced;
 
-    ProductionRecord(int productID){
+    ProductionRecord(int productID) {
         productionNumber = 0;
         serialNumber = "0";
         dateProduced = new Date();
         this.productID = productID;
     }
 
-    ProductionRecord(int productionNumber, int productID, String serialNumber, Date dateProduced){
+    ProductionRecord(int productionNumber, int productID, String serialNumber, Date dateProduced) {
         this.productionNumber = productionNumber;
         this.productID = productID;
         this.serialNumber = serialNumber;
         this.dateProduced = dateProduced;
     }
 
-    ProductionRecord(Product product, int itemCount){
-        serialNumber = product.manufacturer.substring(0,3) + product.type.getCode() + String.format("%05d",itemCount);
+    ProductionRecord(Product product, int itemCount) {
+        serialNumber = product.manufacturer.substring(0, 3) + product.type.getCode() + String.format("%05d", itemCount);
         this.productID = product.getId();
     }
 
     /**
-     *
      * @return returns string of variables listed to be used to print out
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "Production Number: " + productionNumber + " Product ID: " + productID
-                 + " Serial Number: " + serialNumber + " Date: " + dateProduced;
+                + " Serial Number: " + serialNumber + " Date: " + dateProduced;
     }
 
-
+    //getters and setters for variables
     public int getProductionNum() {
         return productionNumber;
     }

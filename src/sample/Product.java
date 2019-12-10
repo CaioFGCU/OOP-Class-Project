@@ -2,6 +2,7 @@ package sample;
 
 /**
  * Product class is an abstract class and implements Item interface to get contents within Item.
+ * Product is used within many different classes within the program
  */
 public abstract class Product implements Item {
     int id;
@@ -11,6 +12,7 @@ public abstract class Product implements Item {
 
     /**
      * Constructor used for declared variables above
+     * overloaded constructors to be used for different parameters
      *
      * @param name         parameter used to get name from within class to be used
      * @param manufacturer parameter used to get manufacturer from within class
@@ -28,7 +30,6 @@ public abstract class Product implements Item {
         this.manufacturer = manufacturer;
         this.type = type;
     }
-
 
 
     public int getId() {
